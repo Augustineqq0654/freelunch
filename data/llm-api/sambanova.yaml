@@ -1,0 +1,38 @@
+id: sambanova
+name: SambaNova Cloud 免费层
+provider: SambaNova
+category: llm-api
+
+url: https://cloud.sambanova.ai/
+docs: https://docs.sambanova.ai/docs/en/models/rate-limits
+signup: https://cloud.sambanova.ai/
+
+cn_access: unknown
+openai_compatible: true
+base_url: https://api.sambanova.ai/v1
+
+models:
+  - Meta-Llama-3.3-70B-Instruct
+  - DeepSeek-V3.1
+  - gpt-oss-120b
+
+limits:
+  - unit: rpm
+    value: 20
+    note: 按模型计
+  - unit: rpd
+    value: 20
+    note: 按模型计
+  - unit: tpd
+    value: 200000
+    note: 按模型计
+
+tags: [OpenAI 兼容, 推理速度快]
+notes: >-
+  所谓免费层，就是"不绑付款方式"时的默认档；绑了卡反而进入 Developer 档，
+  规则完全不同。每个模型每天只有 20 次，够写单次评测或做演示，不适合跑批。
+
+verification:
+  method: manual
+  checked_at: 2026-11-13
+  evidence: https://docs.sambanova.ai/docs/en/models/rate-limits

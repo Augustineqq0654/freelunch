@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: 校验数据与产物
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装依赖
+        run: pip install pydantic PyYAML
+
+      - name: 语法检查
+        run: python -m compileall -q scripts
+
+      - name: 校验数据并检查 README 是否最新
+        run: python scripts/build.py --check
+
+      - name: 构建一次，确认产物完整
+        run: python scripts/build.py
+
+      - name: 确认没有漏提交的生成物
+        run: |
+          if [ -n "$(git status --porcelain README.md)" ]; then
+            echo "::error::README.md 与数据不一致。请在本地运行 python scripts/build.py 并提交结果。"
+            git --no-pager diff --stat README.md
+            exit 1
+          fi

@@ -1,0 +1,24 @@
+id: huggingface-inference
+name: Hugging Face Inference Providers
+provider: Hugging Face
+category: llm-api
+
+url: https://huggingface.co/
+docs: https://huggingface.co/docs/inference-providers
+signup: https://huggingface.co/join
+
+cn_access: blocked
+openai_compatible: true
+base_url: https://router.huggingface.co/v1
+
+models: []
+limits: []
+
+tags: [OpenAI 兼容, 聚合网关]
+notes: >-
+  每月赠送一小笔推理额度，可在多家上游提供方之间路由。额度按美元计而不是次数，
+  用超直接 402，所以"还剩多少次"这种问题在这里没有意义。
+  huggingface.co 在中国大陆无法直连。待核验：当前月度额度数额。
+
+verification:
+  method: unverified

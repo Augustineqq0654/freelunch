@@ -1,0 +1,28 @@
+id: github-models
+name: GitHub Models
+provider: GitHub
+category: llm-api
+
+url: https://docs.github.com/en/github-models
+docs: https://docs.github.com/en/github-models
+
+cn_access: blocked
+openai_compatible: true
+base_url: https://models.github.ai/inference
+
+models: []
+limits: []
+
+archived: true
+archived_reason: >-
+  2026-07-30 起全面下线，playground、模型目录、推理 API 与 BYOK 均已停止服务，官方建议迁往 Azure AI Foundry。这条留作存档，提醒大家别再从旧清单里抄它。
+
+tags: [已下线]
+notes: >-
+  2025 至 2026 年间它是"零门槛免费 API"清单里被推荐最多的一家，
+  也正好演示了这类清单为什么会烂：一条链接死掉，十篇文章跟着错。
+
+verification:
+  method: manual
+  checked_at: 2026-11-13
+  evidence: https://docs.github.com/en/github-models

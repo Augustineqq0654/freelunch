@@ -1,0 +1,22 @@
+id: pollinations
+name: Pollinations
+provider: Pollinations
+category: llm-api
+
+url: https://pollinations.ai/
+docs: https://pollinations.ai/
+
+cn_access: unknown
+openai_compatible: true
+base_url: https://text.pollinations.ai/openai
+
+models: []
+limits: []
+
+tags: [OpenAI 兼容, 无需注册]
+notes: >-
+  不需要注册、不需要 key 就能直接调，按 IP 限速。适合原型阶段验证想法，
+  不适合任何有可用性要求的东西。待核验：限速阈值与当前可用模型。
+
+verification:
+  method: unverified

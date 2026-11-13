@@ -1,0 +1,45 @@
+name: 链接检查
+
+on:
+  schedule:
+    - cron: "0 2 * * 1" # 每周一 10:00 (UTC+8)
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "data/**"
+      - "docs/**"
+      - "README.md"
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    name: 死链检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查 README 与文档里的链接
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # 403/429 是常见的反爬响应，不算死链
+          args: >-
+            --no-progress --max-retries 2 --accept 200,206,301,302,403,429
+            README.md docs/*.md
+          # 定时任务只报告不阻塞；PR 上则必须通过
+          fail: ${{ github.event_name == 'pull_request' }}
+
+      - name: 生成 issue（仅定时任务失败时）
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const run = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.create({
+              owner, repo,
+              title: '链接检查发现死链',
+              body: `定时链接检查失败，详见 [运行记录](${run})。\n\n常见原因：文档页改版、服务下线。请对照数据文件里的 \`verification.evidence\` 逐个更新。`,
+              labels: ['dead-link'],
+            });

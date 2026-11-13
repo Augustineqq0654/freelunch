@@ -1,0 +1,50 @@
+# 复制这个文件到 data/llm-api/<你的 id>.yaml，然后填。文件名必须和 id 一致。
+# 保存后本地跑 `python scripts/build.py`，有任何字段不合规都会立刻报错。
+
+id: example-provider            # 小写短横线，必须与文件名同名
+name: 示例服务                    # 列表里显示的名字
+provider: 示例公司                 # 服务商，用于排序和分组
+category: llm-api
+
+url: https://example.com/       # 官网
+docs: https://example.com/docs  # 免费额度文档（这一项会成为核验证据，尽量选这个）
+signup: https://example.com/signup
+
+# 国内可达性，四选一，没实测过就老实写 unknown：
+#   direct   无需代理即可稳定调用
+#   partial  多数网络能通，但会间歇超时被限流
+#   blocked  大陆网络无法访问，必须自备出口
+#   unknown  还没人测过（写这个反而受欢迎，别人可以补）
+cn_access: unknown
+
+# 如果它兼容 OpenAI 协议，把 base_url 填上，读者复制就能用；不兼容就都留空
+openai_compatible: true
+base_url: https://api.example.com/v1
+
+models:                         # 免费额度真正覆盖的模型，别把付费模型写进来
+  - example-chat
+context_window: 128000          # 上下文长度，不知道就删掉这一行
+limits:                         # 免费额度，按单位逐条列
+  - unit: rpm                   # rpm/rph/rpd/tpm/tph/tpd/tokens_month/requests_month/neurons_day
+    value: 20
+    model: example-chat         # 可选：这条额度只对某个模型生效
+  - unit: tokens_month
+    value: 1000000
+
+# 门槛四件套。本项目只收全 false 的服务，填了 true 会被构建脚本拒绝——
+# 那不是让你改字段，而是说明这家不该进这张表，请改投 docs/EXCLUDED.md。
+requirements:
+  credit_card: false
+  kyc: false
+  phone: false
+  invite_only: false
+
+tags: [OpenAI 兼容, 长上下文]
+notes: >-
+  一两句最有用的坑点。比如"免费额度只覆盖某个模型"、"控制台默认开的是付费
+  通道"、"需要先创建 workspace 才能用"。别写营销词。
+
+verification:                   # 核验状态。没亲自验证过就别填日期。
+  method: unverified            # unverified / manual / http-probe / api-probe
+  # checked_at: 2026-11-13      # method 不是 unverified 时必填
+  # evidence: https://example.com/docs/rate-limits   # 同样必填，指向官方页面或实测记录

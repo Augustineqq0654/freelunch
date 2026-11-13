@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>免费午餐 · 长期免费的大模型 API</title>
+<meta name="description" content="只收录长期免费、零门槛、能直接用的大模型 API。每条都带核验日期和官方证据。">
+<link rel="stylesheet" href="./style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍜</text></svg>">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>免费午餐</h1>
+    <p class="tagline">只收<strong>长期免费</strong>、<strong>零门槛</strong>、<strong>能直接用</strong>的大模型 API。每条都带核验日期和官方证据。</p>
+    <ul class="stats" id="stats"></ul>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap toolbar-inner">
+    <input id="q" type="search" placeholder="搜服务商、模型、标签…" autocomplete="off" aria-label="搜索">
+    <div class="chips" id="groups" role="tablist" aria-label="可达性筛选"></div>
+    <label class="switch">
+      <input type="checkbox" id="only-compat">
+      <span>仅 OpenAI 兼容</span>
+    </label>
+    <select id="sort" aria-label="排序">
+      <option value="default">默认排序</option>
+      <option value="recent">最近核验</option>
+      <option value="name">按名称</option>
+    </select>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="cards" id="cards"></div>
+  <p class="empty" id="empty" hidden>没有匹配的资源。试试清空搜索，或者<a href="#" id="reset">重置筛选</a>。</p>
+</main>
+
+<footer class="wrap">
+  <p>
+    数据来自 <a id="repo-link" href="#">GitHub 仓库</a>，
+    构建于 <time id="built"></time>。免费额度随时可能调整，<strong>请以官方文档为准</strong>。
+  </p>
+  <p class="muted">
+    发现过期或错误？欢迎提 PR —— 把一条标成「已失效」和新增一条同样有价值。
+    本站是纯静态页面，无后端、无追踪。
+  </p>
+</footer>
+
+<noscript><div class="wrap"><p>这个页面需要 JavaScript 才能筛选数据。你也可以直接看仓库里的 README 表格。</p></div></noscript>
+
+<script src="./app.js"></script>
+</body>
+</html>

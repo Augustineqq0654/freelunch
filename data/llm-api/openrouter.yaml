@@ -1,0 +1,31 @@
+id: openrouter
+name: OpenRouter 免费模型
+provider: OpenRouter
+category: llm-api
+
+url: https://openrouter.ai/
+docs: https://openrouter.ai/docs/api_reference/limits
+signup: https://openrouter.ai/sign-in
+
+cn_access: partial
+openai_compatible: true
+base_url: https://openrouter.ai/api/v1
+
+models: []
+limits:
+  - unit: rpm
+    value: 20
+  - unit: rpd
+    value: 50
+    note: 历史累计充值满 10 美元后升到 1000 次/日
+
+tags: [OpenAI 兼容, 聚合网关, 模型多]
+notes: >-
+  只有 ID 以 :free 结尾的模型走免费通道，直接调普通模型会扣余额。
+  注册不需要信用卡，但账户余额为负时免费模型也会被拦。
+  同一模型的上游提供方不止一家，免费模型被限流时换个 provider 往往就通了。
+
+verification:
+  method: manual
+  checked_at: 2026-11-13
+  evidence: https://openrouter.ai/docs/api_reference/limits

@@ -1,0 +1,59 @@
+name: 报告过期信息
+description: 某条资源已经不免费了、额度变了、或者链接失效
+title: "[过期] "
+labels: ["outdated"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        报过期比报新增更有价值——它能让下一个人少踩一次坑。
+
+  - type: input
+    id: which
+    attributes:
+      label: 是哪一条
+      description: 填资源名或 id（data/llm-api/ 下的文件名）
+      placeholder: 例如：cloudflare-workers-ai
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 发生了什么
+      options:
+        - 服务已下线
+        - 取消免费额度，改为付费
+        - 免费额度缩水（变少了 / 少了模型）
+        - 新增了信用卡、实名或手机号要求
+        - 链接打不开或跳转错误
+        - 额度写得不对
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: 具体变化
+      description: 最好给出「原样 → 现在」的对比。
+      placeholder: |
+        原来：每天 10,000 Neurons，免费计划可用
+        现在：需要 Workers Paid 才能调用
+    validations:
+      required: true
+
+  - type: input
+    id: evidence
+    attributes:
+      label: 依据链接
+      description: 官方页面、公告或你的截图。
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: input
+    id: when
+    attributes:
+      label: 你是什么时候发现的
+      placeholder: 2026-11-20

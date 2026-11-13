@@ -1,0 +1,73 @@
+name: 过期提醒
+
+on:
+  schedule:
+    - cron: "0 1 * * 1" # 每周一 09:00 (UTC+8)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  stale:
+    name: 汇总需要核验的条目
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装依赖
+        run: pip install pydantic PyYAML
+
+      - name: 生成报告
+        run: python scripts/build.py --stale > report.txt
+
+      - name: 创建或更新 issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('report.txt', 'utf8').trim();
+            const TITLE = '本周需要核验的免费资源';
+
+            if (report.includes('没有需要复核的条目')) {
+              console.log('全部在有效期内，跳过');
+              return;
+            }
+
+            const body = [
+              '以下条目要么从未核验，要么已经超过核验周期。',
+              '',
+              '认领方式：回复「我来看 xxx」，然后按 [docs/VERIFY.md](../blob/main/docs/VERIFY.md) 的步骤核对，',
+              '更新 `verification.checked_at` 与 `evidence` 后提 PR。',
+              '',
+              '> 哪怕结论是「它已经不免费了」，也是有价值的贡献——把条目 `archived` 掉即可。',
+              '',
+              '```',
+              report,
+              '```',
+              '',
+              `_本 issue 由定时任务自动维护，于 ${new Date().toISOString().slice(0, 10)} 更新。_`,
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'stale-report', per_page: 5,
+            });
+
+            if (open.length > 0) {
+              await github.rest.issues.update({
+                owner, repo, issue_number: open[0].number, body,
+              });
+              console.log(`已更新 #${open[0].number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner, repo, title: TITLE, body, labels: ['stale-report'],
+              });
+              console.log(`已创建 #${created.data.number}`);
+            }

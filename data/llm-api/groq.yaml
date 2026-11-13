@@ -1,0 +1,26 @@
+id: groq
+name: Groq Cloud 免费层
+provider: Groq
+category: llm-api
+
+url: https://groq.com/
+docs: https://console.groq.com/docs/rate-limits
+signup: https://console.groq.com/keys
+
+cn_access: unknown
+openai_compatible: true
+base_url: https://api.groq.com/openai/v1
+
+models:
+  - llama-3.3-70b-versatile
+
+limits: []
+
+tags: [OpenAI 兼容, 速度极快]
+notes: >-
+  免费层按模型分别给 RPD，实时数字在控制台的 Limits 页，文档页经常落后于线上。
+  模型目录换得非常快，文章里抄来的模型名大概率已经下线。
+  待核验：当前免费模型与每日次数需要登录控制台确认。
+
+verification:
+  method: unverified

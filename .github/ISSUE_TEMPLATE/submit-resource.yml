@@ -1,0 +1,95 @@
+name: 提交新资源
+description: 推荐一个长期免费、零门槛的大模型 API
+title: "[新增] "
+labels: ["new-resource"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先确认三件事，再填表：
+
+        1. 它是**长期免费**的，不是注册赠金或限时活动？
+        2. 它**不要信用卡、不要实名、不要手机号**？
+        3. 它是服务商**官方**渠道，不是中转站或逆向接口？
+
+        三条都满足的话，请继续。任一条不满足，提交到 `docs/EXCLUDED.md` 更合适。
+
+  - type: input
+    id: name
+    attributes:
+      label: 服务名称
+      placeholder: 例如：Groq Cloud 免费层
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 官网地址
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: input
+    id: evidence
+    attributes:
+      label: 官方文档里写明免费额度的链接
+      description: 这一项最重要。没有它，没人能复核。
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: textarea
+    id: limits
+    attributes:
+      label: 免费额度
+      description: 尽量给具体数字，并注明单位与重置周期。
+      placeholder: |
+        例如：
+        - 20 次/分钟，50 次/日（累计充值满 10 美元后升到 1000 次/日）
+        - 仅对 ID 以 :free 结尾的模型生效
+    validations:
+      required: true
+
+  - type: textarea
+    id: models
+    attributes:
+      label: 免费额度覆盖的模型
+      description: 只写真正免费的。把付费模型写进来是常见的坑。
+      placeholder: llama-3.3-70b-versatile, gpt-oss-120b
+
+  - type: dropdown
+    id: cn_access
+    attributes:
+      label: 国内可达性
+      description: 你用大陆网络实测过吗？没测过就选「没测过」。
+      options:
+        - 无需代理，稳定可用
+        - 能通，但间歇超时
+        - 完全不通
+        - 没测过
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: compat
+    attributes:
+      label: 兼容性
+      options:
+        - label: 兼容 OpenAI 协议（能填 base_url 直接用）
+        - label: 我实测调用成功过，有返回结果
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 有什么坑
+      description: 一句最有用的提醒，比十行介绍强。
+      placeholder: 例如：控制台默认开的是付费通道，要先切到免费档
+
+  - type: textarea
+    id: proof
+    attributes:
+      label: 验证方式
+      description: curl 输出、控制台截图（可直接粘贴图片）、或文档摘录，任选其一。
+    validations:
+      required: true

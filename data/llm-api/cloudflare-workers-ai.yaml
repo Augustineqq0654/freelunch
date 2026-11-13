@@ -1,0 +1,34 @@
+id: cloudflare-workers-ai
+name: Cloudflare Workers AI
+provider: Cloudflare
+category: llm-api
+
+url: https://developers.cloudflare.com/workers-ai/
+docs: https://developers.cloudflare.com/workers-ai/platform/pricing/
+signup: https://dash.cloudflare.com/sign-up
+
+cn_access: partial
+openai_compatible: true
+base_url: https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/v1
+
+models:
+  - "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+  - "@cf/openai/gpt-oss-120b"
+  - "@cf/qwen/qwen3-30b-a3b-fp8"
+context_window: 128000
+
+limits:
+  - unit: neurons_day
+    value: 10000
+    note: UTC 零点重置
+
+tags: [OpenAI 兼容, 边缘计算, 含向量与语音]
+notes: >-
+  每天 1 万 Neurons，免费计划即可用，不需要绑卡。注意部分前沿模型
+  （Kimi K2.6、GLM 5.3、DeepSeek V4 系列）已被划入付费计划，
+  免费额度调不到，照着旧文章试会一直 403。base_url 里的 ACCOUNT_ID 要换成自己的。
+
+verification:
+  method: manual
+  checked_at: 2026-11-13
+  evidence: https://developers.cloudflare.com/workers-ai/platform/pricing/

@@ -1,0 +1,24 @@
+id: jina-embeddings
+name: Jina Embeddings API
+provider: Jina AI
+category: llm-api
+
+url: https://jina.ai/
+docs: https://jina.ai/embeddings/
+signup: https://jina.ai/embeddings/
+
+cn_access: blocked
+openai_compatible: false
+
+models:
+  - jina-embeddings-v3
+
+limits: []
+
+tags: [向量化, 多语言]
+notes: >-
+  只覆盖 embedding，不含文本生成，适合搭配一个便宜的生成模型做 RAG。
+  待核验：免 key 限速额度、注册后每月赠送的 token 数，以及当前是否有大陆可直连入口。
+
+verification:
+  method: unverified

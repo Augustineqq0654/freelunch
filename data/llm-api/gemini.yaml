@@ -1,0 +1,26 @@
+id: gemini
+name: Google Gemini API
+provider: Google
+category: llm-api
+
+url: https://ai.google.dev/
+docs: https://ai.google.dev/gemini-api/docs/rate-limits
+signup: https://aistudio.google.com/apikey
+
+cn_access: blocked
+openai_compatible: true
+base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+
+models:
+  - gemini-2.5-flash
+
+limits: []
+
+tags: [OpenAI 兼容, 长上下文, 多模态]
+notes: >-
+  免费层按"模型 × RPM / RPD / TPM"分别限额，Google 每隔几个月就会调数字，
+  引用前一定去 rate-limits 页面重新对一遍。中国大陆网络无法直连。
+  待核验：具体额度与当前免费模型列表需要有人实际登录后确认。
+
+verification:
+  method: unverified
