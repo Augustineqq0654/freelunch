@@ -1,0 +1,46 @@
+id: modelscope
+name: 魔搭 ModelScope
+provider: 魔搭社区
+category: llm-api
+
+url: https://www.modelscope.cn/
+docs: https://www.modelscope.cn/docs/model-service/API-Inference/limits
+signup: https://modelscope.cn/register
+
+cn_access: direct
+openai_compatible: true
+base_url: https://api-inference.modelscope.cn/v1/
+
+models:
+  - Qwen/Qwen3.5-35B-A3B
+  - Qwen/Qwen2.5-Coder-32B-Instruct
+  - MiniMax/MiniMax-H3
+
+limits:
+  - unit: credits_day
+    value: 200
+    note: 每日登录发放，当日有效；调用按模型档位扣 0.5–2 魔粒/次
+  - unit: credits_day
+    value: 50
+    note: 绑定阿里云账号后额外发放，当日有效
+
+requirements:
+  credit_card: false
+  kyc: true
+  phone: true
+  invite_only: false
+
+tags: [OpenAI 兼容, 每日重置, 含多模态]
+notes: >-
+  API-Inference 对注册用户长期免费（官方自称「非商业化、非盈利」产品），免费算力
+  以「魔粒」发放：每日登录领 200 魔粒（当日有效），绑定阿里云账号再 +50；调用按
+  模型档位扣 0.5–2 魔粒/次，折合每日约 100–500 次。覆盖模型不固定，以模型页带
+  「API-Inference」闪电标的为准，表里列的是文档示例。门槛：注册要手机号，且必须
+  绑定阿里云账号并完成实名认证才能用。坑点：短期魔粒 24 小时过期、要每日登录
+  领取；官方明确「请勿用于需要高并发的线上任务」，速率动态调整、只保障单并发；
+  使用魔粒前需完善个人信息并验证邮箱。
+
+verification:
+  method: manual
+  checked_at: 2026-11-17
+  evidence: https://www.modelscope.cn/docs/model-service/API-Inference/limits

@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const state = { q: '', group: 'all', onlyCompat: false, sort: 'default' };
+  const state = { q: '', group: 'all', onlyCompat: false, onlyZero: false, sort: 'default' };
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -41,6 +41,7 @@
       if (state.group !== 'all' && r.cn_access !== state.group) return false;
     }
     if (state.onlyCompat && !r.openai_compatible) return false;
+    if (state.onlyZero && r.tier === 'kyc') return false;
     if (!state.q) return true;
     const hay = [
       r.name, r.provider, r.id, r.notes,
@@ -64,6 +65,8 @@
   function renderStats(s) {
     $('stats').innerHTML = [
       `<li>在用 <b>${s.active}</b> 条</li>`,
+      `<li>零门槛 <b>${s.zero ?? 0}</b></li>`,
+      `<li>需实名/手机 <b>${s.kyc ?? 0}</b></li>`,
       `<li>国内直连 <b>${s.direct}</b></li>`,
       `<li>OpenAI 兼容 <b>${s.openai}</b></li>`,
       `<li>已核验 <b>${s.verified}</b></li>`,
@@ -138,6 +141,7 @@
           <h3><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.name)}</a></h3>
           <div class="provider">${esc(r.provider)}${r.openai_compatible ? ' · OpenAI 兼容' : ''}</div>
         </div>
+        ${r.tier === 'kyc' ? `<span class="badge kyc" title="${esc(r.tier_label || '需实名/手机')}">📇 ${esc(r.threshold_text || '需实名/手机')}</span>` : ''}
         <span class="badge ${esc(r.cn_access)}" title="${esc(r.cn_label)}">${esc(r.cn_label)}</span>
       </div>
       <div class="limits">${limits}</div>
@@ -212,14 +216,18 @@
       state.onlyCompat = e.target.checked;
       renderCards(rows);
     });
+    $('only-zero').addEventListener('change', (e) => {
+      state.onlyZero = e.target.checked;
+      renderCards(rows);
+    });
     $('sort').addEventListener('change', (e) => {
       state.sort = e.target.value;
       renderCards(rows);
     });
     $('reset').addEventListener('click', (e) => {
       e.preventDefault();
-      state.q = ''; state.group = 'all'; state.onlyCompat = false;
-      $('q').value = ''; $('only-compat').checked = false;
+      state.q = ''; state.group = 'all'; state.onlyCompat = false; state.onlyZero = false;
+      $('q').value = ''; $('only-compat').checked = false; $('only-zero').checked = false;
       renderChips(rows);
       renderCards(rows);
     });

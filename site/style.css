@@ -262,6 +262,7 @@ main { padding: 26px 20px 10px; }
 .badge.partial { color: var(--partial); background: var(--partial-soft); }
 .badge.blocked { color: var(--blocked); background: var(--blocked-soft); }
 .badge.unknown { color: var(--unknown); background: var(--unknown-soft); }
+.badge.kyc { color: var(--accent); background: var(--accent-soft); }
 
 .limits { display: flex; flex-direction: column; gap: 3px; font-size: 13.5px; }
 

@@ -1,0 +1,48 @@
+id: siliconflow
+name: 硅基流动 SiliconFlow
+provider: 硅基流动
+category: llm-api
+
+url: https://www.siliconflow.cn/
+docs: https://www.siliconflow.cn/pricing
+signup: https://account.siliconflow.cn/zh/login
+
+cn_access: direct
+openai_compatible: true
+base_url: https://api.siliconflow.cn/v1
+
+models:
+  - THUDM/GLM-Z1-9B-0414
+  - tencent/Hunyuan-MT-7B
+  - Qwen/Qwen2.5-7B-Instruct
+  - deepseek-ai/DeepSeek-R1-0528-Qwen3-8B
+  - BAAI/bge-m3
+context_window: 128000
+
+limits:
+  - unit: rpm
+    value: 1000
+    note: 免费对话模型固定限流；向量/重排模型为 2,000 次/分
+  - unit: tpm
+    value: 50000
+    note: 免费对话模型固定限流；向量/重排模型为 500,000 token/分
+
+requirements:
+  credit_card: false
+  kyc: true
+  phone: false
+  invite_only: false
+
+tags: [OpenAI 兼容, 免费模型, 含向量与重排与语音]
+notes: >-
+  一批模型长期按单价 0 计费（定价页明示「免费」）：GLM-Z1-9B-0414、Hunyuan-MT-7B、
+  Xing4.0-29B、Qwen2.5-7B-Instruct、DeepSeek-R1-0528-Qwen3-8B、bge 系列向量/重排、
+  Kolors 生图、SenseVoice 语音等。免费模型限流固定且不随消费升级。坑点：同名
+  Pro/ 前缀是收费版，写错前缀会扣费；免费模型调用以完成实名认证为前提（官方
+  Rate Limits 页写明「实名认证后使用全部的免费模型」）；注册支持邮箱，但部分
+  虚拟运营商手机号段受限，Google/GitHub 登录已下线。
+
+verification:
+  method: manual
+  checked_at: 2026-11-17
+  evidence: https://www.siliconflow.cn/pricing

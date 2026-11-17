@@ -1,8 +1,9 @@
 # 免费午餐 · freelunch
 
-> 只收**长期免费**、**零门槛**（不要信用卡、不要实名、不要手机验证）、**能直接用**的大模型 API。
+> 只收**长期免费**、**能直接用**的大模型 API。主表只收**零门槛**（不要信用卡、不要实名、不要手机验证）；
+> 需要实名/手机但长期免费的国内服务另立**二级表**，门槛全程标注。
 
-当前 **8** 条在用资源，其中 **3** 条在 60 天内核验过，**5** 条待首次核验。
+当前 **11** 条在用资源（**8** 条零门槛 + **3** 条需实名/手机），其中 **6** 条在 60 天内核验过，**5** 条待首次核验。
 
 每个条目都带**核验日期**和**证据链接**。超过 60 天没核验的会自动降级为「待复核」，失效的转入归档——**我们不保留任何一行没人验证过的数据**。
 
@@ -21,7 +22,7 @@
 | 数据形态 | 手写 Markdown | YAML 单一数据源，自动生成 README 与网页 |
 | 过期处理 | 无 | 超过 60 天自动降级，失效自动归档 |
 | 证据 | 无 | 每条必须附官方文档链接，否则不予合并 |
-| 门槛标注 | 常有遗漏 | 信用卡 / 实名 / 手机号，任一项为真即不收 |
+| 门槛标注 | 常有遗漏 | 信用卡/邀请码不收；实名/手机进二级表，表头和角标全程明示 |
 | 国内可达性 | 基本没写 | 独立字段 + 实测，单独分组 |
 | 机器可读 | 无 | `dist/data.json`，可自行二次开发 |
 
@@ -33,7 +34,7 @@
 
 **暂时是空的**——严格按「长期免费 + 零门槛」筛下来，目前没有同时满足「国内可直连」的服务。
 这不是漏了，是筛选口径的结果：海外免费层大多要代理，国内厂商又基本都要实名或手机号。
-知道符合条件的，欢迎提 PR 补上。
+后者已经单独收进下面的「📇 需实名/手机」二级表；仍缺的是零门槛的国内直连服务，知道的欢迎提 PR 补上。
 
 ### 🟡 部分可用
 
@@ -41,8 +42,8 @@
 
 | 服务 | 免费额度 | 代表模型 | OpenAI 兼容 | 国内可达 | 上次核验 |
 | --- | --- | --- | --- | --- | --- |
-| [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)<br><sub>Cloudflare</sub> | 10,000 Neurons/日 | `@cf/meta/llama-3.3-70b-instruct-fp8-fast`、`@cf/openai/gpt-oss-120b`、`@cf/qwen/qwen3-30b-a3b-fp8` | [✓](https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/v1) | 🟡 部分可用 | 2026-11-13（0 天前） |
-| [OpenRouter 免费模型](https://openrouter.ai/)<br><sub>OpenRouter</sub> | 20 次/分<br>50 次/日 | — | [✓](https://openrouter.ai/api/v1) | 🟡 部分可用 | 2026-11-13（0 天前） |
+| [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)<br><sub>Cloudflare</sub> | 10,000 Neurons/日 | `@cf/meta/llama-3.3-70b-instruct-fp8-fast`、`@cf/openai/gpt-oss-120b`、`@cf/qwen/qwen3-30b-a3b-fp8` | [✓](https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/v1) | 🟡 部分可用 | 2026-11-13（4 天前） |
+| [OpenRouter 免费模型](https://openrouter.ai/)<br><sub>OpenRouter</sub> | 20 次/分<br>50 次/日 | — | [✓](https://openrouter.ai/api/v1) | 🟡 部分可用 | 2026-11-13（4 天前） |
 
 ### 🔴 需要代理
 
@@ -62,7 +63,17 @@
 | --- | --- | --- | --- | --- | --- |
 | [Groq Cloud 免费层](https://groq.com/)<br><sub>Groq</sub> | 见备注 | `llama-3.3-70b-versatile` | [✓](https://api.groq.com/openai/v1) | ⚪ 待实测 | ⏳ 待核验 |
 | [Pollinations](https://pollinations.ai/)<br><sub>Pollinations</sub> | 见备注 | — | [✓](https://text.pollinations.ai/openai) | ⚪ 待实测 | ⏳ 待核验 |
-| [SambaNova Cloud 免费层](https://cloud.sambanova.ai/)<br><sub>SambaNova</sub> | 20 次/分<br>20 次/日<br>200,000 token/日 | `Meta-Llama-3.3-70B-Instruct`、`DeepSeek-V3.1`、`gpt-oss-120b` | [✓](https://api.sambanova.ai/v1) | ⚪ 待实测 | 2026-11-13（0 天前） |
+| [SambaNova Cloud 免费层](https://cloud.sambanova.ai/)<br><sub>SambaNova</sub> | 20 次/分<br>20 次/日<br>200,000 token/日 | `Meta-Llama-3.3-70B-Instruct`、`DeepSeek-V3.1`、`gpt-oss-120b` | [✓](https://api.sambanova.ai/v1) | ⚪ 待实测 | 2026-11-13（4 天前） |
+
+### 📇 二级表 · 需实名/手机（长期免费）
+
+下面这些同样**长期免费**，注册也免费，但需要实名认证或手机号。它们大多国内直连、中文文档齐全，对中文用户往往最实用——我们把门槛写在脸上，而不是假装它们不存在。
+
+| 服务 | 免费额度 | 代表模型 | OpenAI 兼容 | 国内可达 | 注册门槛 | 上次核验 |
+| --- | --- | --- | --- | --- | --- | --- |
+| [智谱 BigModel](https://open.bigmodel.cn/)<br><sub>智谱 AI</sub> | 见备注 | `glm-4.7-flash`、`glm-4-flash-250414`、`glm-4.1v-thinking-flash` | [✓](https://open.bigmodel.cn/api/paas/v4/) | 🟢 国内直连 | 📇 手机 | 2026-11-17（0 天前） |
+| [硅基流动 SiliconFlow](https://www.siliconflow.cn/)<br><sub>硅基流动</sub> | 1,000 次/分<br>50,000 token/分 | `THUDM/GLM-Z1-9B-0414`、`tencent/Hunyuan-MT-7B`、`Qwen/Qwen2.5-7B-Instruct` | [✓](https://api.siliconflow.cn/v1) | 🟢 国内直连 | 📇 实名 | 2026-11-17（0 天前） |
+| [魔搭 ModelScope](https://www.modelscope.cn/)<br><sub>魔搭社区</sub> | 200 魔粒/日<br>50 魔粒/日 | `Qwen/Qwen3.5-35B-A3B`、`Qwen/Qwen2.5-Coder-32B-Instruct`、`MiniMax/MiniMax-H3` | [✓](https://api-inference.modelscope.cn/v1/) | 🟢 国内直连 | 📇 实名、手机 | 2026-11-17（0 天前） |
 
 ### 🗄 已归档
 
@@ -101,7 +112,7 @@ curl -s https://your-name.github.io/freelunch/data.json | jq '.resources[] | sel
 进这张表要同时满足：
 
 1. **长期免费**：不是注册赠送的试用额度，不是限时活动。
-2. **零门槛**：不要信用卡、不要实名认证、不要手机验证。这一条由构建脚本强制校验，写进去也过不了 CI。
+2. **门槛分级**：信用卡、邀请码一概不收；需要实名或手机的，进「需实名/手机」二级表，和零门槛主表分开呈现。这一条由构建脚本强制校验。
 3. **有官方渠道**：必须是服务商自己的公开产品或免费层，不收中转、反代、逆向接口。
 4. **有证据**：附官方文档链接和核验日期。
 
@@ -124,7 +135,7 @@ curl -s https://your-name.github.io/freelunch/data.json | jq '.resources[] | sel
 - [被排除的服务](docs/EXCLUDED.md) — 看起来该收、实际不收的，逐条写了原因
 - [核验手册](docs/VERIFY.md) — 怎么核验一条、国内可达性怎么测
 - [本地开发](docs/DEVELOPMENT.md) — 构建、目录结构、设计取舍
-- [路线图](docs/ROADMAP.md) — 下一步做什么，以及"要不要放宽门槛"的争论
+- [路线图](docs/ROADMAP.md) — 下一步做什么，以及「需实名/手机」二级表政策的由来
 
 ## 免责声明
 
@@ -136,4 +147,4 @@ MIT。数据可自由取用、二次分发，无需署名。
 
 ---
 
-<sub>本文件由 `scripts/build.py` 根据 `data/` 自动生成，请勿直接编辑。最后构建：2026-11-13</sub>
+<sub>本文件由 `scripts/build.py` 根据 `data/` 自动生成，请勿直接编辑。最后构建：2026-11-17</sub>

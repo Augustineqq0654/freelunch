@@ -34,7 +34,7 @@ PR 描述里写一句「原额度 X，现为 Y，依据 <链接>」就够了。
 
 1. 复制模板：`cp data/llm-api/_template.yaml data/llm-api/你的-id.yaml`
 2. 文件名 = `id`，小写短横线，例如 `my-provider.yaml`
-3. 按模板里的注释填，字段含义见 [POLICY.md](POLICY.md)
+3. 按模板里的注释填，字段含义见 [POLICY.md](docs/POLICY.md)。需要实名/手机才能注册的国内服务**同样收**：`requirements` 里如实填 `true`，构建时会自动进「需实名/手机」二级表
 4. 本地跑一次：
 
 ```bash
@@ -48,7 +48,7 @@ python scripts/build.py
 ## 提交前自查
 
 - [ ] 这家确实是**长期免费**，不是注册赠金或限时活动
-- [ ] 确实**不要信用卡、不要实名、不要手机号**
+- [ ] 确实**不要信用卡、不要邀请码**；需要实名/手机才能注册的也收，但 `requirements` 要如实填，让条目进二级表
 - [ ] 是服务商**官方**渠道，不是中转站、反代或逆向接口
 - [ ] `verification.checked_at` 是我**今天实际查看**的日期，不是抄来的
 - [ ] `verification.evidence` 指向官方页面，链接能打开

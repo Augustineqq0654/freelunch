@@ -37,16 +37,18 @@ README = ROOT / "README.md"
 def render_readme(resources, stats, generated_at: dt.date) -> str:
     today = generated_at
 
-    def section(title, rows, intro=""):
+    def section(title, rows, intro="", threshold_col=False):
         if not rows:
             return []
         out = [f"### {title}", ""]
         if intro:
             out += [intro, ""]
-        out += [
-            "| 服务 | 免费额度 | 代表模型 | OpenAI 兼容 | 国内可达 | 上次核验 |",
-            "| --- | --- | --- | --- | --- | --- |",
-        ]
+        head = ["服务", "免费额度", "代表模型", "OpenAI 兼容", "国内可达"]
+        if threshold_col:
+            head.append("注册门槛")
+        head.append("上次核验")
+        out.append("| " + " | ".join(head) + " |")
+        out.append("| " + " | ".join("---" for _ in head) + " |")
         for r in rows:
             limits = "<br>".join(l.text for l in r.limits[:3]) or "见备注"
             models = "、".join(f"`{m}`" for m in r.models[:3]) or "—"
@@ -59,22 +61,26 @@ def render_readme(resources, stats, generated_at: dt.date) -> str:
             else:
                 checked = "⏳ 待核验"
             name = f"[{r.name}]({r.url})<br><sub>{r.provider}</sub>"
-            out.append(
-                f"| {name} | {limits} | {models} | {compat} | {r.cn_icon} {r.cn_label} | {checked} |"
-            )
+            cells = [name, limits, models, compat, f"{r.cn_icon} {r.cn_label}"]
+            if threshold_col:
+                cells.append(f"📇 {r.threshold_text}")
+            cells.append(checked)
+            out.append("| " + " | ".join(cells) + " |")
         out.append("")
         return out
 
     active = [r for r in resources if not r.archived]
     archived = [r for r in resources if r.archived]
+    zero = [r for r in active if r.tier == "zero"]
+    kyc = [r for r in active if r.tier == "kyc"]
 
     body = []
-    direct_rows = [r for r in active if r.cn_access == "direct"]
+    direct_rows = [r for r in zero if r.cn_access == "direct"]
     if direct_rows:
         body += section(
             "🟢 国内可直连",
             direct_rows,
-            "无需任何代理，中国大陆网络下可直接调用。",
+            "无需任何代理，中国大陆网络下可直接调用，且注册零门槛。",
         )
     else:
         body += [
@@ -82,23 +88,30 @@ def render_readme(resources, stats, generated_at: dt.date) -> str:
             "",
             "**暂时是空的**——严格按「长期免费 + 零门槛」筛下来，目前没有同时满足「国内可直连」的服务。",
             "这不是漏了，是筛选口径的结果：海外免费层大多要代理，国内厂商又基本都要实名或手机号。",
-            "知道符合条件的，欢迎提 PR 补上。",
+            "后者已经单独收进下面的「📇 需实名/手机」二级表；仍缺的是零门槛的国内直连服务，知道的欢迎提 PR 补上。",
             "",
         ]
     body += section(
         "🟡 部分可用",
-        [r for r in active if r.cn_access == "partial"],
+        [r for r in zero if r.cn_access == "partial"],
         "国内多数网络可访问，但存在间歇性超时或需特殊 DNS，生产环境请自备重试。",
     )
     body += section(
         "🔴 需要代理",
-        [r for r in active if r.cn_access == "blocked"],
+        [r for r in zero if r.cn_access == "blocked"],
         "中国大陆网络无法直接访问，需要自备网络出口。",
     )
     body += section(
         "⚪ 待实测",
-        [r for r in active if r.cn_access == "unknown"],
+        [r for r in zero if r.cn_access == "unknown"],
         "还没有人在中国大陆网络下实测过可达性。这正是最容易上手的贡献点。",
+    )
+    body += section(
+        "📇 二级表 · 需实名/手机（长期免费）",
+        kyc,
+        "下面这些同样**长期免费**，注册也免费，但需要实名认证或手机号。它们大多国内直连、中文文档齐全，"
+        "对中文用户往往最实用——我们把门槛写在脸上，而不是假装它们不存在。",
+        threshold_col=True,
     )
     if archived:
         body += ["### 🗄 已归档", "", "下列服务曾经可用，现在因下线、取消免费额度或收紧门槛而不再推荐。", ""]
@@ -107,13 +120,15 @@ def render_readme(resources, stats, generated_at: dt.date) -> str:
         body.append("")
 
     verified_note = (
-        f"当前 **{len(active)}** 条在用资源，其中 **{stats['verified']}** 条在 "
+        f"当前 **{len(active)}** 条在用资源（**{stats['zero']}** 条零门槛 + "
+        f"**{stats['kyc']}** 条需实名/手机），其中 **{stats['verified']}** 条在 "
         f"{lib.STALE_DAYS} 天内核验过，**{stats['unverified']}** 条待首次核验。"
     )
 
     readme = f"""# 免费午餐 · {lib.REPO_NAME}
 
-> 只收**长期免费**、**零门槛**（不要信用卡、不要实名、不要手机验证）、**能直接用**的大模型 API。
+> 只收**长期免费**、**能直接用**的大模型 API。主表只收**零门槛**（不要信用卡、不要实名、不要手机验证）；
+> 需要实名/手机但长期免费的国内服务另立**二级表**，门槛全程标注。
 
 {verified_note}
 
@@ -134,7 +149,7 @@ def render_readme(resources, stats, generated_at: dt.date) -> str:
 | 数据形态 | 手写 Markdown | YAML 单一数据源，自动生成 README 与网页 |
 | 过期处理 | 无 | 超过 {lib.STALE_DAYS} 天自动降级，失效自动归档 |
 | 证据 | 无 | 每条必须附官方文档链接，否则不予合并 |
-| 门槛标注 | 常有遗漏 | 信用卡 / 实名 / 手机号，任一项为真即不收 |
+| 门槛标注 | 常有遗漏 | 信用卡/邀请码不收；实名/手机进二级表，表头和角标全程明示 |
 | 国内可达性 | 基本没写 | 独立字段 + 实测，单独分组 |
 | 机器可读 | 无 | `dist/data.json`，可自行二次开发 |
 
@@ -174,7 +189,7 @@ curl -s https://your-name.github.io/{lib.REPO_NAME}/data.json | jq '.resources[]
 进这张表要同时满足：
 
 1. **长期免费**：不是注册赠送的试用额度，不是限时活动。
-2. **零门槛**：不要信用卡、不要实名认证、不要手机验证。这一条由构建脚本强制校验，写进去也过不了 CI。
+2. **门槛分级**：信用卡、邀请码一概不收；需要实名或手机的，进「需实名/手机」二级表，和零门槛主表分开呈现。这一条由构建脚本强制校验。
 3. **有官方渠道**：必须是服务商自己的公开产品或免费层，不收中转、反代、逆向接口。
 4. **有证据**：附官方文档链接和核验日期。
 
@@ -197,7 +212,7 @@ curl -s https://your-name.github.io/{lib.REPO_NAME}/data.json | jq '.resources[]
 - [被排除的服务](docs/EXCLUDED.md) — 看起来该收、实际不收的，逐条写了原因
 - [核验手册](docs/VERIFY.md) — 怎么核验一条、国内可达性怎么测
 - [本地开发](docs/DEVELOPMENT.md) — 构建、目录结构、设计取舍
-- [路线图](docs/ROADMAP.md) — 下一步做什么，以及"要不要放宽门槛"的争论
+- [路线图](docs/ROADMAP.md) — 下一步做什么，以及「需实名/手机」二级表政策的由来
 
 ## 免责声明
 
@@ -225,6 +240,9 @@ def build_payload(resources, stats, generated_at: dt.date) -> dict:
                 **r.model_dump(mode="json", exclude={"verification"}),
                 "freshness": r.freshness,
                 "cn_label": r.cn_label,
+                "tier": r.tier,
+                "tier_label": r.tier_label,
+                "threshold_text": r.threshold_text,
                 "verification": {
                     **r.verification.model_dump(mode="json"),
                     "method_label": lib.METHOD_LABEL[r.verification.method],

@@ -27,7 +27,7 @@ from pydantic import (
 # ---------------------------------------------------------------- 全局策略
 
 REPO_NAME = "freelunch"
-REPO_TAGLINE = "长期免费、零门槛、能直接用的大模型 API"
+REPO_TAGLINE = "长期免费、能直接用的大模型 API（零门槛主表 + 需实名/手机二级表）"
 REPO_URL = "https://github.com/your-name/freelunch"  # 发布前替换
 
 # 超过这个天数没有核验，就进入"待复核"
@@ -50,8 +50,13 @@ CN_ACCESS_LABEL = {
 CN_ACCESS_ICON = {"direct": "🟢", "partial": "🟡", "blocked": "🔴", "unknown": "⚪"}
 CN_ACCESS_ORDER = {"direct": 0, "partial": 1, "blocked": 2, "unknown": 3}
 
+# 门槛分级：zero = 全 false，进主表；kyc = 需实名或手机，进二级表。
+Tier = Literal["zero", "kyc"]
+TIER_LABEL = {"zero": "零门槛", "kyc": "需实名/手机"}
+
 Unit = Literal[
-    "rpm", "rph", "rpd", "tpm", "tph", "tpd", "tokens_month", "requests_month", "neurons_day"
+    "rpm", "rph", "rpd", "tpm", "tph", "tpd", "tokens_month", "requests_month",
+    "neurons_day", "credits_day",
 ]
 UNIT_LABEL = {
     "rpm": "次/分",
@@ -63,6 +68,7 @@ UNIT_LABEL = {
     "tokens_month": "token/月",
     "requests_month": "次/月",
     "neurons_day": "Neurons/日",
+    "credits_day": "魔粒/日",
 }
 
 VerifyMethod = Literal["manual", "api-probe", "http-probe", "unverified"]
@@ -107,10 +113,11 @@ class Limit(BaseModel):
 
 
 class Requirements(BaseModel):
-    """准入门槛。本项目只收全 false 的资源，这条规则由校验器强制。
+    """准入门槛。信用卡/邀请码一律不收（校验器强制）；实名/手机允许，
+    但会把条目打进「需实名/手机」二级表，和零门槛主表分开呈现。
 
-    字段存在的意义不是"支持收费门槛"，而是让提交者在填了 true 的时候
-    得到一句明确的拒绝理由，而不是稿子被默默关掉。
+    字段存在的意义是让门槛在数据里可见：填了 true 不再是拒稿理由，
+    但条目会带上 tier=kyc 的标记，README 表头和网页卡片都会明示。
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -121,13 +128,13 @@ class Requirements(BaseModel):
     invite_only: bool = False
 
     @model_validator(mode="after")
-    def _zero_threshold(self) -> "Requirements":
-        blocked = [name for name, value in self.model_dump().items() if value]
+    def _hard_blocks(self) -> "Requirements":
+        blocked = [name for name in ("credit_card", "invite_only") if getattr(self, name)]
         if blocked:
             raise ValueError(
-                "本项目只收录零门槛资源，以下门槛必须为 false："
+                "本项目不收录需要信用卡或邀请码的资源，以下门槛必须为 false："
                 + "、".join(blocked)
-                + "。若该服务值得推荐但需要门槛，请改提 PR 到 docs/EXCLUDED.md，说明原因。"
+                + "。实名（kyc）/手机（phone）可以为 true，条目会进入「需实名/手机」二级表。"
             )
         return self
 
@@ -232,9 +239,28 @@ class Resource(BaseModel):
         return CN_ACCESS_ICON[self.cn_access]
 
     @property
+    def tier(self) -> Tier:
+        return "kyc" if (self.requirements.kyc or self.requirements.phone) else "zero"
+
+    @property
+    def tier_label(self) -> str:
+        return TIER_LABEL[self.tier]
+
+    @property
+    def threshold_text(self) -> str:
+        """条目实际的注册门槛，用于二级表的「注册门槛」列和网页角标。"""
+        items = []
+        if self.requirements.kyc:
+            items.append("实名")
+        if self.requirements.phone:
+            items.append("手机")
+        return "、".join(items) if items else "无"
+
+    @property
     def sort_key(self) -> tuple:
         return (
             1 if self.archived else 0,
+            0 if self.tier == "zero" else 1,
             CN_ACCESS_ORDER[self.cn_access],
             0 if self.openai_compatible else 1,
             self.provider.lower(),
@@ -307,6 +333,8 @@ def stats(resources: list[Resource]) -> dict:
     return {
         "total": len(resources),
         "active": len(active),
+        "zero": sum(1 for r in active if r.tier == "zero"),
+        "kyc": sum(1 for r in active if r.tier == "kyc"),
         "direct": sum(1 for r in active if r.cn_access == "direct"),
         "partial": sum(1 for r in active if r.cn_access == "partial"),
         "blocked": sum(1 for r in active if r.cn_access == "blocked"),

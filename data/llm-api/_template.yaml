@@ -25,14 +25,15 @@ models:                         # 免费额度真正覆盖的模型，别把付�
   - example-chat
 context_window: 128000          # 上下文长度，不知道就删掉这一行
 limits:                         # 免费额度，按单位逐条列
-  - unit: rpm                   # rpm/rph/rpd/tpm/tph/tpd/tokens_month/requests_month/neurons_day
+  - unit: rpm                   # rpm/rph/rpd/tpm/tph/tpd/tokens_month/requests_month/neurons_day/credits_day
     value: 20
     model: example-chat         # 可选：这条额度只对某个模型生效
   - unit: tokens_month
     value: 1000000
 
-# 门槛四件套。本项目只收全 false 的服务，填了 true 会被构建脚本拒绝——
-# 那不是让你改字段，而是说明这家不该进这张表，请改投 docs/EXCLUDED.md。
+# 门槛四件套。信用卡/邀请码只能是 false（填 true 会被构建脚本拒绝）；
+# 实名（kyc）/手机（phone）可以为 true——条目会自动进「需实名/手机」二级表，
+# 门槛会在 README 表头、网页角标上明示，不用担心读者被误导。
 requirements:
   credit_card: false
   kyc: false
